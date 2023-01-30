@@ -1,0 +1,72 @@
+<div class="container">
+<form [formGroup]="myfrom">
+    <table style="width: 70%;">
+        <tr>
+         <td>
+            <div class="form">
+                <mat-form-field appearance="fill" class="form-element">
+                    <mat-label>Bill To:</mat-label>
+                    <mat-select formControlName="BillTo">
+                        <mat-option *ngFor="let cust of customerList" [value]="cust">
+                            {{cust}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+        
+            </div>
+        </td>
+
+        <td>
+            <div class="form">
+                <mat-form-field class="form-element">
+                    <input matInput id="invoiceno" placeholder="Invoice No:" formControlName="InvoiceNo">
+                </mat-form-field>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <div class="form">
+                <mat-form-field class="form-element">
+                    <input matInput id="invoicedate" [matDatepicker]="picker" placeholder="Invoice Date:" formControlName="InvoiceDate">
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </td>
+        <td>
+            <div class="form">
+                <mat-form-field class="form-element" appearance="fill">
+                    <input matInput  [matDatepicker]="duedatepicker" placeholder="due Date:" id="duedate" 
+                    formControlName="DueDate"
+                    (datechange)="dateChangeHandler($event)"
+                    >
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="duedatepicker"></mat-datepicker-toggle>
+                    <mat-datepicker #duedatepicker></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+        <mat-form-field appearance="fill" class="form">
+            <mat-label>Status</mat-label>
+            <select matNativeControl required formControlName="Status">
+              <option value="draft">Draft</option>
+              <option value="saved">Saved</option>
+            </select>
+          </mat-form-field>
+        </td>
+    </tr>
+    
+        <div class="form">
+            <button name="btnSave" type="submit" (click)="saveInvoice()">Save</button>
+        </div>
+        <pre>{{ myfrom.value | json }}</pre>
+    </table>
+</form>
+</div>
