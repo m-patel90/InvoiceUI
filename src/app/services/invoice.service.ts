@@ -12,7 +12,7 @@ export class InvoiceService {
 
   constructor(private http : HttpClient) { }
 
-  saveInvoice(invoice: Invoice){
+  saveInvoice(invoice: any){
     return this.http.post(BASE_URL+'/Invoice/SaveInvoice', invoice);
   }
 

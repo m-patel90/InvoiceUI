@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { Invoice } from '../models/invoice';
 import { InvoiceDTO } from '../models/invoice-dto';
 import { InvoiceService } from '../services/invoice.service';
@@ -16,7 +17,7 @@ export class InvoiceListComponent implements OnInit {
 
   totalRecords: number = 50;
   pageIndex = 1;
-  pageSize =2;
+  pageSize =3;
 
   constructor(private invoiceService: InvoiceService,
     private router: Router) { }
@@ -27,7 +28,9 @@ export class InvoiceListComponent implements OnInit {
 
   getInvoice(){
     this.invoiceService.getInvoice(this.pageIndex, this.pageSize).subscribe( data => {
-      this.invoiceList = data;
+      //if(data.body != undefined || data.body != null){
+        this.invoiceList = data ;
+      //}
       console.log(this.invoiceList);
       this.totalRecords = data[0].totalRecords;
       //console.log(data.headers.get('X-Pagination'));

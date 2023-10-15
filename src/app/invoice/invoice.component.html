@@ -4,15 +4,14 @@
         <tr>
          <td>
             <div class="form">
-                <mat-form-field appearance="fill" class="form-element">
+                <mat-form-field class="form-element">
                     <mat-label>Bill To:</mat-label>
                     <mat-select formControlName="BillTo">
-                        <mat-option *ngFor="let cust of customerList" [value]="cust">
-                            {{cust}}
+                        <mat-option *ngFor="let cust of customerList" [value]="cust.Id">
+                            {{cust.name}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-        
             </div>
         </td>
 
@@ -23,28 +22,28 @@
                 </mat-form-field>
             </div>
         </td>
+        <td><pre>{{ myfrom.value | json }}</pre></td>
     </tr>
 
     <tr>
         <td>
             <div class="form">
                 <mat-form-field class="form-element">
-                    <input matInput id="invoicedate" [matDatepicker]="picker" placeholder="Invoice Date:" formControlName="InvoiceDate">
-                    <mat-hint>MM/DD/YYYY</mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <input matInput id="invoicedate" [matDatepicker]="picker" (dateInput)="addEvent('input', $event)" placeholder="Invoice Date:" formControlName="InvoiceDate">
+                    <mat-hint>DD/MM/YYYY</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
             </div>
         </td>
         <td>
             <div class="form">
-                <mat-form-field class="form-element" appearance="fill">
+                <mat-form-field class="form-element">
                     <input matInput  [matDatepicker]="duedatepicker" placeholder="due Date:" id="duedate" 
                     formControlName="DueDate"
-                    (datechange)="dateChangeHandler($event)"
-                    >
+                    (datechange)="dateChangeHandler($event)">
                     <mat-hint>MM/DD/YYYY</mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="duedatepicker"></mat-datepicker-toggle>
+                    <mat-datepicker-toggle matSuffix [for]="duedatepicker"></mat-datepicker-toggle>
                     <mat-datepicker #duedatepicker></mat-datepicker>
                 </mat-form-field>
             </div>
@@ -53,7 +52,7 @@
 
     <tr>
         <td>
-        <mat-form-field appearance="fill" class="form">
+        <mat-form-field class="form">
             <mat-label>Status</mat-label>
             <select matNativeControl required formControlName="Status">
               <option value="draft">Draft</option>
@@ -63,10 +62,116 @@
         </td>
     </tr>
     
-        <div class="form">
-            <button name="btnSave" type="submit" (click)="saveInvoice()">Save</button>
-        </div>
-        <pre>{{ myfrom.value | json }}</pre>
+        
     </table>
+
+    <!-- Editable mat-table -->
+    <br/>
+    <h1>Invoice Details</h1>
+    <div class="table-holder">
+    <table mat-table [dataSource]="dataSource" formArrayName="rows">
+        <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+        <tr mat-row *matRowDef="let row; let i = index; columns: displayColumns;" [formGroupName]="i"></tr>
+        
+        <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef> ID </th>
+            <mat-cell *matCellDef="let row;let i = index;" [formGroup]="row">
+              {{i+1}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ProductName" >
+            <th mat-header-cell *matHeaderCellDef> ProductName </th>
+            <td mat-cell *matCellDef="let row" [formGroup]="row" class="margin-right"> 
+              <select formControlName="ProductName">
+                <option *ngFor="let pro of productList" [value]="pro.id">{{pro.name}}</option>
+              </select>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Description">
+            <th mat-header-cell *matHeaderCellDef> Description </th>
+            <td mat-cell *matCellDef="let element" [formGroup]="element">
+              <input type="textarea" formControlName="Desc"  placeholder="To date">
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Price">
+            <th mat-header-cell *matHeaderCellDef> Price </th>
+            <td mat-cell *matCellDef="let row" [formGroup]="row">
+              <input type="text" formControlName="Price" placeholder="To date">
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Qunatity">
+            <th mat-header-cell *matHeaderCellDef> Qunatity </th>
+            <td mat-cell *matCellDef="let row" [formGroup]="row">
+              <input type="text" formControlName="Qunatity" placeholder="To date">
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Tax">
+            <th mat-header-cell *matHeaderCellDef> Tax </th>
+            <td mat-cell *matCellDef="let row" [formGroup]="row">
+              <input type="text" formControlName="Tax" placeholder="To date">
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Total">
+            <th mat-header-cell *matHeaderCellDef> Total </th>
+            <td mat-cell *matCellDef="let row" [formGroup]="row">
+              <input type="text" formControlName="Total" placeholder="To date">
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Delete">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element;let index = index">
+              <input type="button" placeholder="To date" (click)="RemoveRow(index)" value="Remove">
+            </td>
+          </ng-container>
+    </table>
+    <button type="button" (click)="addRow()">Add row</button>
+    </div>
+   
+
+    <!-- Extra columns for Invoice -->
+    <table>
+      <tr>
+        <td >
+          <div class="form">
+            <mat-form-field >
+                <input type="text" matInput id="invoicenote" placeholder="Invoice Note:" formControlName="InvoiceNote">
+            </mat-form-field>
+          </div>
+        </td>
+        <td>
+          <div class="form">
+            <mat-form-field >
+                <input type="text" matInput id="subtotal" placeholder="SubTotal"readonly="false" formControlName="SubTotal">
+            </mat-form-field>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="form">
+            <mat-form-field>
+                <input type="text" matInput id="totaltax" placeholder="TotalTax"readonly="false" formControlName="TotalTax">
+            </mat-form-field>
+          </div>
+        </td>
+        <td>
+          <div class="form">
+            <mat-form-field >
+                <input type="text" matInput id="grandtotal" placeholder="Grandtotal"readonly="false" formControlName="GrandTotal">
+            </mat-form-field>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="form">
+      <button name="btnSave" type="submit" (click)="saveInvoice()" [disabled]="!myfrom.valid" >Save</button>
+  </div>
 </form>
 </div>
